@@ -1,4 +1,4 @@
- name: CI
+name: CI MLflow
  
 on:
   push:
@@ -10,6 +10,10 @@ on:
  
 env:
   CSV_URL: "MLproject/train_pca.csv"
+  TARGET_VAR: "quality"
+  ALPHA: 0.5
+  L1_RATIO: 0.5
+  RANDOM_STATE: 42
  
 jobs:
   build:
@@ -39,13 +43,14 @@ jobs:
       # Run as a mlflow project
       - name: Run mlflow project
         run: |
-          mlflow run MLproject --env-manager=local 
- 
+          mlflow run MLproject --env-manager=local
+
+
       # Save models to GitHub Repository
       - name: Save mlruns to repo
         run: |
-          git config --global user.name ${{ secrets.username }}
-          git config --global user.email ${{ secrets.email }}
+          git config --global user.name ${{ secrets.USERNAME }}
+          git config --global user.email ${{ secrets.EMAIL }}
           git add mlruns/
           git commit -m "Save mlruns from CI run"
           git push origin main
